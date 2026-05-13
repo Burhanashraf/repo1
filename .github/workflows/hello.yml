@@ -1,0 +1,32 @@
+#so in github actions we create a .github folder and under github folder we create a workflows folder,workflow is created in a .yml file,in .yml file we first write the workflow name and then we write the jobs and under jobs we write the steps  
+
+name: hello workflow
+
+#this workflow will run if there is any push on the main branch and will run jobs .
+on:
+#we are giving path defined here bcux whats happening is even if we change a readme file the pipe line automatically runs.
+#so we are giving paths .
+#BSince this is manual delivery in ci-cd path one doesnt support in manual but for automatic deployment it supports path.
+#Which needs to be done in this way.
+ workflow_dispatch:
+   
+#this is the job
+jobs:
+#these jobs run on runners and github actions gives you runners to run jobs .
+#Runners are like servers which means every job needs a runner to run the job.
+#runners is of 2 types 1. Github Runners {free up to 2000 mins per month},  2. self gosted runners {like ec2}
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: say hello to users
+        run: echo "hello user"
+        
+      - name: say hello to username
+        run: echo "hello $USER"
+
+  details:
+     runs-on: ubuntu-latest
+     steps:
+       - name: show me versions of docker and git
+         run: docker --version && git --version
+         

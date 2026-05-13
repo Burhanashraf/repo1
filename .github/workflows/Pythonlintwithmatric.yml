@@ -1,0 +1,37 @@
+name: Python lint
+
+on:
+ workflow_dispatch: 
+
+jobs:
+ validate:
+    runs-on: ubuntu-latest
+    # If we want to run multiple versions at a time in one task then we will go with matrix statergy 
+    #Here fail-fast is false which means that even if one of python-version fails to install the task will move ahead and try another versions
+    #if fail-fast was set to true then if any python-version fails then our pipeline would stop from there and not proceed further for another version
+    #in your GitHub Actions example, the matrix strategy runs your job with Python versions 3.9 to 3.13. But it doesn’t install all versions on one runner. Instead, GitHub spins up separate runners (machines) for each Python version in parallel. This helps test your code on multiple Python versions simultaneously, ensuring compatibility without mixing them on a single runner.
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+   
+    steps:
+      - name: checckout code
+        uses: actions/checkout@v4
+
+      - name: setup python ${{ matrix.python-version}}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version}}
+
+      #Here we are only able to use one version of pythom
+      
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: run linter
+        run: flake8 app.py
+         
+    
+        

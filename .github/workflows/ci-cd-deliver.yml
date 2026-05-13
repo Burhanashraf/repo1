@@ -1,0 +1,47 @@
+name: CI-CD
+on:
+  #this workflow_dispatch is for manually running of your pipeline user needs to run this pipeline which will be delivery
+  workflow_dispatch:
+   inputs:
+    environment:
+      description: This is the environment where we need to run our pipeline
+      default: 'dev'
+      required: true
+      type: choice
+      options:
+        - dev
+        - prod
+        - staging
+     
+jobs:
+  Clone:
+    runs-on: ubuntu-latest
+    steps:
+       - name: clone the code
+         run: echo "code cloned"
+  Build:
+     needs: [Clone]
+     runs-on: ubuntu-latest
+     steps:
+       - name: run docker version
+         run: docker --version
+        
+  Test:
+      needs: [Build]
+      runs-on: ubuntu-latest
+      steps:
+        - name: check if tf is installed
+          run: 
+           sudo apt update
+           sudo apt install -y terraform
+           terraform --version
+
+# here in deploy we have added env as dev so while running this pipeline manually if anyone chooses env other than dev , so it wont deploy.
+#It will run upto test but since we have added env in deploy if will not deploy anything if u choose other than dev
+  Deploy:
+    if: inputs.environment == 'dev'
+    needs: [Build,Test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Done
+        run: echo "completed"

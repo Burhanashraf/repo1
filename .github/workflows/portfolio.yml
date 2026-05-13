@@ -1,0 +1,34 @@
+name: Portfolio
+
+on:
+ workflow_dispatch: 
+
+permissions: 
+   pages: write
+   id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: 
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url}}
+    steps:
+    #Get access to portfolio code via pre-build actions
+       - name: gitcheckout
+         uses: actions/checkout@v4
+    #To setup Github Pages
+       - name: Set Github Pages
+         uses: actions/configure-pages@v4
+    # Static code artifacts
+       - name: Upload static files
+         uses: actions/upload-pages-artifact@v4
+         with:
+          path: .
+    # To deploy github page
+       - name: Deploy to Github pages
+         id: deployment
+         uses: actions/deploy-pages@v4
+       
+   
+   
